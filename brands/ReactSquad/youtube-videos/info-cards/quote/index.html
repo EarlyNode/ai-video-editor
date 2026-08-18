@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face { font-family: "Instrument Sans"; src: url("fonts/InstrumentSans-Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+      @font-face { font-family: "Instrument Sans"; src: url("fonts/InstrumentSans-SemiBold.ttf") format("truetype"); font-weight: 600; font-display: block; }
+      @font-face { font-family: "Instrument Sans"; src: url("fonts/InstrumentSans-Regular.ttf") format("truetype"); font-weight: 400; font-display: block; }
+      :root { --yellow: #f7cf4c; --ink: #0a0a0a; --glass: rgba(12,12,12,0.91); --line: rgba(255,255,255,0.12); }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: "Instrument Sans", ui-sans-serif, system-ui, sans-serif; }
+      #stage { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      .video-wrapper { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; }
+      .video-wrapper video { width: 100%; height: 100%; object-fit: cover; }
+      .card-host { position: absolute; pointer-events: none; overflow: visible; }
+      .card-host .card { position: relative; width: 100%; height: 100%; }
+
+      /* TEMPLATE — quote card (bottom-left, prominent) */
+      .card[data-card-id="quote"] .q { position: absolute; left: 0; bottom: 0; width: 1180px; background: var(--glass); border: 1px solid var(--line); border-left: 8px solid var(--yellow); border-radius: 22px; padding: 40px 56px 44px; box-shadow: 0 20px 56px rgba(0,0,0,0.5); }
+      .card[data-card-id="quote"] .mark { position: absolute; left: 38px; top: -14px; font-family: Georgia, serif; font-size: 130px; line-height: 1; color: var(--yellow); opacity: 0.9; }
+      .card[data-card-id="quote"] .qtext { font-family: "Instrument Sans"; font-weight: 700; font-size: 58px; line-height: 1.2; color: #fff; letter-spacing: -0.5px; }
+      .card[data-card-id="quote"] .qtext .hl { color: var(--yellow); }
+      .card[data-card-id="quote"] .attr { font-family: "Instrument Sans"; font-weight: 600; font-size: 25px; letter-spacing: 1px; color: #bdbdbd; margin-top: 22px; }
+      .card[data-card-id="quote"] .attr b { color: var(--yellow); font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <div id="stage" data-composition-id="graphic-overlays" data-start="0" data-duration="10" data-fps="60" data-width="1920" data-height="1080">
+      <div class="video-wrapper" id="video-wrap">
+        <video id="bg-video" src="input-video.mp4" muted playsinline data-start="0" data-duration="10" data-track-index="1"></video>
+      </div>
+      <div class="card-host clip" data-card-id="quote" data-start="0" data-duration="10" data-track-index="2"
+           style="left:96px;top:520px;width:1220px;height:520px;visibility:hidden;opacity:0;">
+        <div class="card" data-card-id="quote">
+          <div class="q" id="q-card">
+            <div class="mark" id="q-mark">&ldquo;</div>
+            <div class="qtext" id="q-text">Write review comments <span class="hl">as questions</span>. It lowers the other person's defenses.</div>
+            <div class="attr" id="q-attr">Speaker Name &nbsp;·&nbsp; <b>Role, Company</b></div>
+          </div>
+        </div>
+      </div>
+      <script src="vendor/gsap.min.js"></script>
+      <script>
+        (function () {
+          const gsap = window.gsap;
+          const tl = gsap.timeline({ paused: true });
+          const HOST = '.card-host[data-card-id="quote"]';
+          const S = '.card[data-card-id="quote"] ';
+          tl.set(HOST, { visibility: "visible" }, 1.50);
+          tl.fromTo(HOST, { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 1.50);
+          tl.from(S + '#q-mark', { opacity: 0, scale: 0.4, duration: 0.5, ease: "back.out(2)", transformOrigin: "left top" }, 1.70);
+          tl.from(S + '#q-text', { opacity: 0, y: 18, duration: 0.55, ease: "power2.out" }, 1.92);
+          tl.from(S + '#q-attr', { opacity: 0, y: 12, duration: 0.45, ease: "power2.out" }, 2.30);
+          tl.to(HOST, { opacity: 0, y: 26, duration: 0.55, ease: "power2.in" }, 8.30);
+          tl.set(HOST, { visibility: "hidden" }, 8.90);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["graphic-overlays"] = tl;
+        })();
+      </script>
+    </div>
+  </body>
+</html>

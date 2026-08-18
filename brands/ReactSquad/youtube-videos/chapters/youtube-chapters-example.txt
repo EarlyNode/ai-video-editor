@@ -1,0 +1,12 @@
+0:00 Intro
+0:16 The review workflow
+0:52 Core concepts
+1:43 Writing useful review comments
+3:10 The review process, step by step
+5:02 Demo: Reviewing a sample change
+6:59 Advanced techniques
+11:04 Testing: Pick the right tool
+14:12 Architecture tradeoffs
+15:30 Validation patterns
+16:38 Data and forms
+20:22 Wrap-up

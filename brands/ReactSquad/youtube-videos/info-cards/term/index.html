@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face { font-family: "Instrument Sans"; src: url("fonts/InstrumentSans-Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+      @font-face { font-family: "Instrument Sans"; src: url("fonts/InstrumentSans-SemiBold.ttf") format("truetype"); font-weight: 600; font-display: block; }
+      @font-face { font-family: "Instrument Sans"; src: url("fonts/InstrumentSans-Regular.ttf") format("truetype"); font-weight: 400; font-display: block; }
+      :root { --yellow: #f7cf4c; --ink: #0a0a0a; --glass: rgba(12,12,12,0.90); --line: rgba(255,255,255,0.12); }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: "Instrument Sans", ui-sans-serif, system-ui, sans-serif; }
+      #stage { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      .video-wrapper { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; }
+      .video-wrapper video { width: 100%; height: 100%; object-fit: cover; }
+      .card-host { position: absolute; pointer-events: none; overflow: visible; }
+      .card-host .card { position: relative; width: 100%; height: 100%; }
+
+      /* TEMPLATE — term callout (bottom-left) */
+      .card[data-card-id="term"] .callout { position: absolute; left: 0; bottom: 0; width: 1040px; background: var(--glass); border: 1px solid var(--line); border-left: 6px solid var(--yellow); border-radius: 18px; padding: 28px 40px 30px; box-shadow: 0 16px 44px rgba(0,0,0,0.45); }
+      .card[data-card-id="term"] .tag { display: inline-flex; align-items: center; gap: 8px; background: var(--yellow); color: var(--ink); font-family: "Instrument Sans"; font-weight: 700; font-size: 17px; letter-spacing: 3px; text-transform: uppercase; padding: 6px 14px; border-radius: 8px; }
+      .card[data-card-id="term"] .term { font-family: "Instrument Sans"; font-weight: 700; font-size: 50px; line-height: 1; color: #fff; margin-top: 16px; }
+      .card[data-card-id="term"] .def { font-family: "Instrument Sans"; font-weight: 400; font-size: 27px; line-height: 1.42; color: #d6d6d6; margin-top: 14px; }
+      .card[data-card-id="term"] .def b { color: var(--yellow); font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <div id="stage" data-composition-id="graphic-overlays" data-start="0" data-duration="9" data-fps="60" data-width="1920" data-height="1080">
+      <div class="video-wrapper" id="video-wrap">
+        <video id="bg-video" src="input-video.mp4" muted playsinline data-start="0" data-duration="9" data-track-index="1"></video>
+      </div>
+      <div class="card-host clip" data-card-id="term" data-start="0" data-duration="9" data-track-index="2"
+           style="left:96px;top:600px;width:760px;height:440px;visibility:hidden;opacity:0;">
+        <div class="card" data-card-id="term">
+          <div class="callout" id="tm-callout">
+            <div class="tag" id="tm-tag">Term</div>
+            <div class="term" id="tm-term">SudoLang</div>
+            <div class="def" id="tm-def">A pseudolanguage for prompting LLMs — natural language plus simple code constructs. <b>Token-efficient → higher prompt adherence.</b></div>
+          </div>
+        </div>
+      </div>
+      <script src="vendor/gsap.min.js"></script>
+      <script>
+        (function () {
+          const gsap = window.gsap;
+          const tl = gsap.timeline({ paused: true });
+          const HOST = '.card-host[data-card-id="term"]';
+          const S = '.card[data-card-id="term"] ';
+          tl.set(HOST, { visibility: "visible" }, 1.50);
+          tl.fromTo(HOST, { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 1.50);
+          tl.from(S + '#tm-tag', { opacity: 0, y: 10, duration: 0.4, ease: "power2.out" }, 1.75);
+          tl.from(S + '#tm-term', { opacity: 0, y: 16, duration: 0.45, ease: "power3.out" }, 1.90);
+          tl.from(S + '#tm-def', { opacity: 0, y: 14, duration: 0.5, ease: "power2.out" }, 2.10);
+          tl.to(HOST, { opacity: 0, x: -36, duration: 0.5, ease: "power2.in" }, 7.60);
+          tl.set(HOST, { visibility: "hidden" }, 8.15);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["graphic-overlays"] = tl;
+        })();
+      </script>
+    </div>
+  </body>
+</html>

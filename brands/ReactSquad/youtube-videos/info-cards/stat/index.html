@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face { font-family: "Instrument Sans"; src: url("fonts/InstrumentSans-Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+      @font-face { font-family: "Instrument Sans"; src: url("fonts/InstrumentSans-SemiBold.ttf") format("truetype"); font-weight: 600; font-display: block; }
+      @font-face { font-family: "Instrument Sans"; src: url("fonts/InstrumentSans-Regular.ttf") format("truetype"); font-weight: 400; font-display: block; }
+      :root { --yellow: #f7cf4c; --ink: #0a0a0a; --glass: rgba(12,12,12,0.90); --line: rgba(255,255,255,0.12); }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: "Instrument Sans", ui-sans-serif, system-ui, sans-serif; }
+      #stage { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      .video-wrapper { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; }
+      .video-wrapper video { width: 100%; height: 100%; object-fit: cover; }
+      .card-host { position: absolute; pointer-events: none; overflow: visible; }
+      .card-host .card { position: relative; width: 100%; height: 100%; }
+
+      /* TEMPLATE — stat strip (bottom-left) */
+      .card[data-card-id="stat"] .row { position: absolute; left: 0; bottom: 0; display: flex; align-items: stretch; gap: 14px; }
+      .card[data-card-id="stat"] .brand { width: 104px; background: var(--yellow); border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 16px 44px rgba(0,0,0,0.4); }
+      .card[data-card-id="stat"] .brand img { width: 62px; height: 62px; object-fit: contain; }
+      .card[data-card-id="stat"] .tile { background: var(--glass); border: 1px solid var(--line); border-radius: 16px; padding: 16px 30px 18px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; box-shadow: 0 16px 44px rgba(0,0,0,0.4); min-width: 150px; }
+      .card[data-card-id="stat"] .num { font-family: "Instrument Sans"; font-weight: 700; font-size: 60px; line-height: 1; color: var(--yellow); letter-spacing: -1px; }
+      .card[data-card-id="stat"] .lbl { font-family: "Instrument Sans"; font-weight: 600; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; color: #e9e9e9; }
+    </style>
+  </head>
+  <body>
+    <div id="stage" data-composition-id="graphic-overlays" data-start="0" data-duration="12" data-fps="60" data-width="1920" data-height="1080">
+      <div class="video-wrapper" id="video-wrap">
+        <video id="bg-video" src="input-video.mp4" muted playsinline data-start="0" data-duration="12" data-track-index="1"></video>
+      </div>
+      <div class="card-host clip" data-card-id="stat" data-start="0" data-duration="12" data-track-index="2"
+           style="left:96px;top:874px;width:1360px;height:150px;visibility:hidden;opacity:0;">
+        <div class="card" data-card-id="stat">
+          <div class="row">
+            <div class="brand" id="st-brand"><img src="reactsquad-mark.png" alt="ReactSquad" /></div>
+            <div class="tile" id="st-t1"><div class="num" id="st-n1">0</div><div class="lbl">Generations</div></div>
+            <div class="tile" id="st-t2"><div class="num" id="st-n2">0</div><div class="lbl">Prototypes</div></div>
+            <div class="tile" id="st-t3"><div class="num" id="st-n3">0</div><div class="lbl">Criteria</div></div>
+            <div class="tile" id="st-t4"><div class="num" id="st-n4">0</div><div class="lbl">Files</div></div>
+          </div>
+        </div>
+      </div>
+      <script src="vendor/gsap.min.js"></script>
+      <script>
+        (function () {
+          const gsap = window.gsap;
+          const tl = gsap.timeline({ paused: true });
+          const HOST = '.card-host[data-card-id="stat"]';
+          const S = '.card[data-card-id="stat"] ';
+          function countUp(sel, to, at, dur) {
+            const o = { v: 0 };
+            tl.to(o, { v: to, duration: dur, ease: "power2.out", onUpdate: function () { const el = document.querySelector(sel); if (el) el.textContent = Math.round(o.v); } }, at);
+          }
+          tl.set(HOST, { visibility: "visible" }, 1.40);
+          tl.set(HOST, { opacity: 1 }, 1.40);
+          tl.from(S + '#st-brand', { opacity: 0, scale: 0.6, duration: 0.4, ease: "back.out(1.8)", transformOrigin: "center" }, 1.40);
+          const tiles = ['#st-t1','#st-t2','#st-t3','#st-t4'];
+          tiles.forEach((t, i) => tl.from(S + t, { opacity: 0, y: 24, scale: 0.9, duration: 0.42, ease: "back.out(1.5)", transformOrigin: "center bottom" }, 1.55 + i * 0.13));
+          countUp(S + '#st-n1', 4, 1.65, 1.0);
+          countUp(S + '#st-n2', 8, 1.78, 1.0);
+          countUp(S + '#st-n3', 11, 1.91, 1.1);
+          countUp(S + '#st-n4', 73, 2.04, 1.2);
+          tl.to(HOST, { opacity: 0, y: 24, duration: 0.5, ease: "power2.in" }, 9.60);
+          tl.set(HOST, { visibility: "hidden" }, 10.15);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["graphic-overlays"] = tl;
+        })();
+      </script>
+    </div>
+  </body>
+</html>

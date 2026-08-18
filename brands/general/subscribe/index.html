@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face { font-family: "Instrument Sans"; src: url("fonts/InstrumentSans-Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+      @font-face { font-family: "Instrument Sans"; src: url("fonts/InstrumentSans-SemiBold.ttf") format("truetype"); font-weight: 600; font-display: block; }
+      @font-face { font-family: "Instrument Sans"; src: url("fonts/InstrumentSans-Regular.ttf") format("truetype"); font-weight: 400; font-display: block; }
+
+      :root { --yellow: #f7cf4c; --ink: #0a0a0a; --yt-red: #cc0000; }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: "Instrument Sans", ui-sans-serif, system-ui, sans-serif; }
+      #stage { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      .video-wrapper { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; }
+      .video-wrapper video { width: 100%; height: 100%; object-fit: cover; }
+      .card-host { position: absolute; pointer-events: none; overflow: visible; }
+      .card-host .card { position: relative; width: 100%; height: 100%; }
+
+      .card[data-card-id="sub"] .bar {
+        position: absolute; left: 0; bottom: 60px; width: 880px; height: 128px;
+        display: flex; align-items: center; gap: 22px;
+        background: rgba(12,12,12,0.88);
+        border: 1px solid rgba(255,255,255,0.10);
+        border-radius: 28px; padding: 0 26px;
+        box-shadow: 0 18px 50px rgba(0,0,0,0.5);
+      }
+      .card[data-card-id="sub"] .avatar { width: 84px; height: 84px; border-radius: 50%; background: var(--yellow); display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+      .card[data-card-id="sub"] .avatar img { width: 52px; height: 52px; object-fit: contain; display: block; }
+      .card[data-card-id="sub"] .meta { display: flex; flex-direction: column; gap: 3px; flex: 1 1 auto; min-width: 0; }
+      .card[data-card-id="sub"] .chname { font-family: "Instrument Sans"; font-weight: 700; font-size: 32px; color: #fff; line-height: 1.1; }
+      .card[data-card-id="sub"] .subs { font-family: "Instrument Sans"; font-weight: 400; font-size: 21px; color: #aaa; }
+
+      .card[data-card-id="sub"] .btngroup { display: flex; align-items: center; gap: 14px; flex: 0 0 auto; }
+      .card[data-card-id="sub"] .btnwrap { position: relative; width: 236px; height: 68px; }
+      .card[data-card-id="sub"] .btn { position: absolute; inset: 0; border-radius: 999px; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: "Instrument Sans"; font-weight: 700; font-size: 26px; letter-spacing: 1px; text-transform: uppercase; }
+      .card[data-card-id="sub"] .btn-red { background: var(--yt-red); color: #fff; }
+      .card[data-card-id="sub"] .btn-done { background: #2b2b2b; color: #e9e9e9; opacity: 0; }
+      .card[data-card-id="sub"] .check { width: 24px; height: 24px; }
+      .card[data-card-id="sub"] .check path { stroke: #e9e9e9; stroke-width: 2.4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+      .card[data-card-id="sub"] .bell-btn { width: 68px; height: 68px; border-radius: 50%; background: #2b2b2b; display: flex; align-items: center; justify-content: center; opacity: 0; flex: 0 0 auto; }
+      .card[data-card-id="sub"] .bell { width: 34px; height: 34px; }
+      .card[data-card-id="sub"] .bell path { fill: #e9e9e9; }
+
+      .card[data-card-id="sub"] .cursor { position: absolute; left: 0; top: 0; width: 52px; height: 52px; opacity: 0; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.55)); }
+    </style>
+  </head>
+  <body>
+    <div id="stage" data-composition-id="graphic-overlays" data-start="0" data-duration="12" data-fps="60" data-width="1920" data-height="1080">
+      <div class="video-wrapper" id="video-wrap">
+        <video id="bg-video" src="input-video.mp4" muted playsinline data-start="0" data-duration="12" data-track-index="1"></video>
+      </div>
+
+      <div class="card-host clip" data-card-id="sub" data-start="0" data-duration="12" data-track-index="2"
+           style="left:540px;top:720px;width:920px;height:340px;visibility:hidden;opacity:0;">
+        <div class="card" data-card-id="sub">
+          <div class="bar" id="sub-bar">
+            <div class="avatar"><img src="reactsquad-mark.png" alt="ReactSquad" /></div>
+            <div class="meta">
+              <div class="chname">ReactSquad</div>
+              <div class="subs">Senior React developers</div>
+            </div>
+            <div class="btngroup">
+              <div class="btnwrap">
+                <div class="btn btn-red" id="sub-btn-red">Subscribe</div>
+                <div class="btn btn-done" id="sub-btn-done">
+                  <svg class="check" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5 11-11"/></svg>
+                  Subscribed
+                </div>
+              </div>
+              <div class="bell-btn" id="sub-bell-btn">
+                <svg class="bell" id="sub-bell" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 2.2a2 2 0 0 0-2 2v.5C7.6 5.5 6 7.7 6 10.3V14l-1.7 1.7a1 1 0 0 0 .7 1.7h14a1 1 0 0 0 .7-1.7L18 14v-3.7c0-2.6-1.6-4.8-4-5.6v-.5a2 2 0 0 0-2-2z"/>
+                  <path d="M10 19a2 2 0 0 0 4 0z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <svg class="cursor" id="sub-cursor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 2l0 17.5 4.2-4.1 2.6 6.1 2.8-1.2-2.6-6.0 5.8 0z" fill="#fff" stroke="#0a0a0a" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <script src="vendor/gsap.min.js"></script>
+      <script>
+        (function () {
+          const gsap = window.gsap;
+          const tl = gsap.timeline({ paused: true });
+          const HOST = '.card-host[data-card-id="sub"]';
+          const S = '.card[data-card-id="sub"] ';
+
+          // button centres in card coords (bar bottom:60, height128 -> y center ~ 340-60-64 = 216)
+          const SUB_X = 612, SUB_Y = 214;   // Subscribe / Subscribed button
+          const BELL_X = 786, BELL_Y = 214; // bell button
+
+          // enter
+          tl.set(HOST, { visibility: "visible" }, 1.00);
+          tl.fromTo(HOST, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 1.00);
+          tl.from(S + '.avatar', { opacity: 0, scale: 0.5, duration: 0.45, ease: "back.out(2)", transformOrigin: "center" }, 1.25);
+          tl.from(S + '.meta', { opacity: 0, x: -14, duration: 0.4, ease: "power2.out" }, 1.35);
+
+          // ── cursor flies to Subscribe ──
+          tl.set(S + '#sub-cursor', { x: SUB_X + 150, y: SUB_Y + 150, opacity: 0 });
+          tl.to(S + '#sub-cursor', { opacity: 1, duration: 0.2 }, 1.95);
+          tl.to(S + '#sub-cursor', { x: SUB_X, y: SUB_Y, duration: 0.85, ease: "power2.inOut" }, 2.00);
+
+          // CLICK 1 — Subscribe
+          tl.to(S + '#sub-cursor', { scale: 0.82, duration: 0.10, ease: "power2.in", transformOrigin: "0 0" }, 2.88);
+          tl.to(S + '#sub-cursor', { scale: 1.0, duration: 0.12, ease: "power2.out", transformOrigin: "0 0" }, 2.98);
+          tl.to(S + '#sub-btn-red', { scale: 0.94, duration: 0.10, ease: "power2.in", transformOrigin: "center" }, 2.88);
+          tl.to(S + '#sub-btn-red', { scale: 1.0, duration: 0.12, ease: "power2.out", transformOrigin: "center" }, 2.98);
+
+          // morph red -> Subscribed, bell button appears
+          tl.to(S + '#sub-btn-red', { opacity: 0, duration: 0.25, ease: "power1.inOut" }, 3.12);
+          tl.fromTo(S + '#sub-btn-done', { opacity: 0 }, { opacity: 1, duration: 0.30, ease: "power2.out" }, 3.12);
+          tl.fromTo(S + '#sub-bell-btn', { opacity: 0, scale: 0.6, x: -10 }, { opacity: 1, scale: 1, x: 0, duration: 0.35, ease: "back.out(1.8)", transformOrigin: "center" }, 3.22);
+
+          // ── cursor moves to the bell ──
+          tl.to(S + '#sub-cursor', { x: BELL_X, y: BELL_Y, duration: 0.70, ease: "power2.inOut" }, 3.75);
+
+          // CLICK 2 — bell
+          tl.to(S + '#sub-cursor', { scale: 0.82, duration: 0.10, ease: "power2.in", transformOrigin: "0 0" }, 4.55);
+          tl.to(S + '#sub-cursor', { scale: 1.0, duration: 0.12, ease: "power2.out", transformOrigin: "0 0" }, 4.65);
+          tl.to(S + '#sub-bell-btn', { scale: 0.9, duration: 0.10, ease: "power2.in", transformOrigin: "center" }, 4.55);
+          tl.to(S + '#sub-bell-btn', { scale: 1.0, duration: 0.12, ease: "power2.out", transformOrigin: "center" }, 4.65);
+          // bell turns "active" (yellow) + rings
+          tl.to(S + '#sub-bell path', { fill: "#f7cf4c", duration: 0.2 }, 4.70);
+          tl.to(S + '#sub-bell', { keyframes: { rotation: [0, -24, 17, -12, 8, -4, 0] }, duration: 0.9, ease: "sine.inOut", transformOrigin: "top center" }, 4.72);
+
+          // cursor drifts away
+          tl.to(S + '#sub-cursor', { x: BELL_X + 160, y: BELL_Y + 150, opacity: 0, duration: 0.6, ease: "power2.in" }, 5.30);
+
+          // exit
+          tl.to(HOST, { opacity: 0, y: 30, duration: 0.5, ease: "power2.in" }, 9.90);
+          tl.set(HOST, { visibility: "hidden" }, 10.50);
+
+          window.__timelines = window.__timelines || {};
+          window.__timelines["graphic-overlays"] = tl;
+        })();
+      </script>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "_comment": "Brand-level styling for podcast-clips vertical shorts (1080x1920). Repo-relative paths for brand assets; the render script resolves speaker tracks/tags/transcripts against the project dir. The outro card lives here so every episode reuses the same brand end-card.",
+  "fontsDir": "brands/ReactSquad/fonts",
+  "out": { "w": 1080, "h": 1920, "fps": 24, "crf": 18, "preset": "medium" },
+  "crop": { "w": 608, "x": 656 },
+  "twoUp": { "cropW": 1214, "cropX": 353, "bandH": 960 },
+  "caption": { "font": "Lexend Deca", "size": 94, "base": "#FFFFFF", "hi": "#F7CF4C", "marginV": 330, "maxWords": 4, "maxChars": 18 },
+  "hook": { "font": "Londrina Solid Black", "size": 104, "red": "#FF2A2A", "white": "#FFFFFF", "dur": 2.2, "y": 960 },
+  "tag": { "x": 46, "y": 60, "yBottom": 1020, "cropRegion": [760, 192, 40, 824] },
+  "outro": {
+    "dur": 1.0,
+    "blurSigma": 28, "dim": -0.34,
+    "mark": "brands/ReactSquad/reactsquad-mark@4x-yellow.png",
+    "cta": ["WATCH THE", "FULL EPISODE"],
+    "ctaSize": 128, "ctaY": 620,
+    "showLines": ["Ask Better Questions", "Podcast"],
+    "showSize": 124, "showY": 970,
+    "brand": "ReactSquad", "brandSize": 66, "brandY": 1470,
+    "markScale": 220, "markY": 1180
+  }
+}
