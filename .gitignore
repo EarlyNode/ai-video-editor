@@ -107,18 +107,9 @@ important-notes.md
 /brands/*/
 !/brands/ReactSquad/
 !/brands/general/
-!brands/ReactSquad/**/*.png
-!brands/ReactSquad/**/*.jpg
-!brands/ReactSquad/**/*.jpeg
-!brands/ReactSquad/**/*.gif
-!brands/ReactSquad/**/*.webp
-!brands/ReactSquad/**/*.avif
-!brands/general/**/*.png
-!brands/general/**/*.jpg
-!brands/general/**/*.jpeg
-!brands/general/**/*.gif
-!brands/general/**/*.webp
-!brands/general/**/*.avif
+
+# Existing reviewed brand media remains tracked. New media is ignored by default and must be
+# force-added only after a deliberate public-content review.
 
 # Episode-specific nameplates contain guest names and source-video stills
 /brands/ReactSquad/podcast/nameplates/*.png
